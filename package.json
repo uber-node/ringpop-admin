@@ -8,11 +8,14 @@
   "version": "0.9.0",
   "bin": {
     "ringpop-admin": "./ringpop-admin.js",
+    "ringpop-admin-checksums": "./checksums.js",
     "ringpop-admin-count": "./count.js",
     "ringpop-admin-dist": "./dist.js",
     "ringpop-admin-dump": "./dump.js",
+    "ringpop-admin-leave": "./leave.js",
     "ringpop-admin-list": "./list.js",
     "ringpop-admin-lookup": "./lookup.js",
+    "ringpop-admin-join": "./join.js",
     "ringpop-admin-status": "./status.js",
     "ringpop-admin-top": "./top.js"
   },
