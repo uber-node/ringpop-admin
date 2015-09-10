@@ -52,7 +52,7 @@ function main() {
 
         var partitionCount = clusterManager.getPartitionCount();
         if (clusterManager.getPartitionCount() > 1) {
-            console.error('Error: cluster is partitioned. An accurate count cannot be provided.');
+            console.error('Error: cluster is partitioned. An accurate status cannot be provided.');
             process.exit(1);
         }
 
