@@ -21,23 +21,31 @@
 // THE SOFTWARE.
 'use strict';
 
+var AdminClient = require('./lib/admin-client.js');
+var assertNoError = require('./lib/util.js').assertNoError;
+var ClusterManager = require('./lib/cluster-manager.js');
 var program = require('commander');
 
 function main() {
     program
-        .description('Command-line tools for Ringpop')
-        .version(require('./package.json').version)
-        .command('checksums', 'Prints membership checksums')
-        .command('dist', 'Distribution of keyspace')
-        .command('dump', 'Dump membership information to disk')
-        .command('count', 'Counts members')
-        .command('leave', 'Makes node leave the cluster')
-        .command('list', 'List member information')
-        .command('lookup', 'Lookup a key in the ring')
-        .command('join', 'Makes node (re)join the cluster')
-        .command('status', 'Status of members in ring')
-        .command('top', 'General membership information')
-        .parse(process.argv);
+        .description('Makes node leave cluster')
+        .option('--tchannel-v1')
+        .usage('[options] <address>');
+    program.parse(process.argv);
+
+    var address = program.args[0];
+
+    if (!address) {
+        console.error('Error: address is required');
+        process.exit(1);
+    }
+
+    var tchannelVersion = program.tchannelV1 ? 'v1' : 'v2';
+    var client = new AdminClient(address);
+    client.leave(tchannelVersion, function onLeave(err) {
+        assertNoError(err);
+        process.exit();
+    });
 }
 
 if (require.main === module) {
