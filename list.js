@@ -22,7 +22,7 @@
 'use strict';
 
 var ClusterManager = require('./lib/cluster-manager.js');
-var ClusterNode = require('./lib/cluster-node.js');
+var AdminClient = require('./lib/admin-client.js');
 var program = require('commander');
 
 function main() {

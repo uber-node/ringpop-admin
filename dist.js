@@ -22,7 +22,7 @@
 'use strict';
 
 var CliColor = require('cli-color');
-var ClusterNode = require('./lib/cluster-node.js');
+var AdminClient = require('./lib/admin-client.js');
 var createTable = require('./lib/table.js');
 var HashRing = require('ringpop/lib/ring.js');
 var program = require('commander');
@@ -47,8 +47,8 @@ function main() {
         'percentage'
     ]);
 
-    var node = new ClusterNode(hostPort);
-    node.sendAdminStats(program.tchannelV1 ? 'v1' : 'v2', function onSend(err, stats) {
+    var node = new AdminClient(hostPort);
+    node.stats(program.tchannelV1 ? 'v1' : 'v2', function onSend(err, stats) {
         var members = stats.membership.members;
 
         members = members.sort(function sort(a, b) {

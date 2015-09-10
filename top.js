@@ -27,7 +27,7 @@ var program = require('commander');
 
 var createTable = require('./lib/table.js');
 var ClusterManager = require('./lib/cluster-manager.js');
-var ClusterNode = require('./lib/cluster-node.js');
+var AdminClient = require('./lib/admin-client.js');
 var PartitionBar = require('./lib/partition-bar.js');
 
 var currentRows;
