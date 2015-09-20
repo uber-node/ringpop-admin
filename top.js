@@ -127,7 +127,7 @@ function calcRefreshRate() {
 
 function clearScreen() {
     /*jshint -W115 */
-    process.stdout.write('\033c');
+    process.stdout.write('\x1Bc');
 }
 
 function printAndExit(msg) {
