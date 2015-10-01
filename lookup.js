@@ -21,8 +21,7 @@
 // THE SOFTWARE.
 'use strict';
 
-var ClusterManager = require('./lib/cluster-manager.js');
-var AdminClient = require('./lib/admin-client.js');
+var ClusterManager = require('./lib/cluster.js');
 var program = require('commander');
 
 function main() {
@@ -46,7 +45,7 @@ function main() {
     }
 
     var clusterManager = new ClusterManager({
-        program: program,
+        useTChannelV1: program.tchannelV1,
         coordAddr: coord
     });
     clusterManager.lookup(program.key, function onLookup(err, res) {
@@ -68,5 +67,3 @@ function main() {
 if (require.main === module) {
     main();
 }
-
-
