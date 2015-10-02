@@ -5,7 +5,7 @@
     "Jeff Wolski <wolski@uber.com>"
   ],
   "repository": "git://github.com/uber/ringpop-admin.git",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "bin": {
     "ringpop-admin": "./ringpop-admin.js",
     "ringpop-admin-checksums": "./checksums.js",
