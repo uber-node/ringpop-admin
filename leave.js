@@ -23,7 +23,6 @@
 
 var AdminClient = require('./lib/admin-client.js');
 var assertNoError = require('./lib/util.js').assertNoError;
-var ClusterManager = require('./lib/cluster-manager.js');
 var program = require('commander');
 
 function main() {
@@ -40,9 +39,10 @@ function main() {
         process.exit(1);
     }
 
-    var tchannelVersion = program.tchannelV1 ? 'v1' : 'v2';
-    var client = new AdminClient(address);
-    client.leave(tchannelVersion, function onLeave(err) {
+    var client = new AdminClient({
+        useTChannelV1: program.tchannelV1
+    });
+    client.leave(address, function onLeave(err) {
         assertNoError(err);
         process.exit();
     });

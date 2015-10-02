@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // Copyright (c) 2015 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,8 +21,37 @@
 // THE SOFTWARE.
 'use strict';
 
-function PartitionBar() {
-    this.selectedPartition = 0;
+var Cluster = require('./lib/cluster.js');
+var createTable = require('./lib/table.js');
+var program = require('commander');
+var parseReuseCommand = require('./commands.js').parseReuseCommand;
+
+function main() {
+    console.log('Command not yet available.');
+    process.exit(1);
+
+    var command = parseReuseCommand(program);
+    var cluster = new Cluster({
+        useTChannelV1: command.useTChannelV1
+    });
+    cluster.reuse({
+        coordinator: command.coordinator,
+        member: command.member,
+        limit: command.limit
+    }, function onReuse(err, results) {
+        var table = createTable([]);
+        results.forEach(function each(result) {
+            table.push([result.member, formatResult(result)]);
+        });
+        console.log(table.toString());
+        process.exit();
+    });
+
+    function formatResult(result) {
+        return result.err ? 'error (' + result.err.message + ')' : 'success';
+    }
 }
 
-module.exports = PartitionBar;
+if (require.main === module) {
+    main();
+}

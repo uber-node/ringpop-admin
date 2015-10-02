@@ -22,13 +22,10 @@
 'use strict';
 
 var CliColor = require('cli-color');
-var CliTable = require('cli-table');
 var program = require('commander');
 
 var createTable = require('./lib/table.js');
-var ClusterManager = require('./lib/cluster-manager.js');
-var AdminClient = require('./lib/admin-client.js');
-var PartitionBar = require('./lib/partition-bar.js');
+var ClusterManager = require('./lib/cluster.js');
 
 var currentRows;
 var isPaused = false;
@@ -37,7 +34,6 @@ var refreshFn;
 var refreshRate;
 var refreshTimer;
 var selectedRow = 0;
-var tchannelVersion;
 var viewportTop;
 var viewportBottom;
 
@@ -46,6 +42,10 @@ var Defaults = {
     RefreshRate: 10000,
     TChannelVersion: 'v2'
 };
+
+function PartitionBar() {
+    this.selectedPartition = 0;
+}
 
 function main() {
     program
@@ -85,7 +85,7 @@ function main() {
     var clusterManager = new ClusterManager({
         coordAddr: coordinatorAddress,
         dumpTo: program.dumpFile,
-        program: program
+        useTChannelV1: program.tchannelV1
     });
     var partitionBar = new PartitionBar();
 
@@ -130,11 +130,6 @@ function clearScreen() {
     process.stdout.write('\x1Bc');
 }
 
-function printAndExit(msg) {
-    console.log(msg);
-    process.exit(1);
-}
-
 function printPartitionBar(clusterManager, partitionBar) {
     var bar = '';
 
@@ -159,8 +154,6 @@ function printPartitionBar(clusterManager, partitionBar) {
 
 function printPartitionTable(clusterManager, partitionBar) {
     var columns = ['Address', 'Status', 'Inc. No.'];
-
-    var partitionTable = createTable(columns);
 
     var partition = clusterManager.getPartitionAt(partitionBar.selectedPartition - 1);
 
@@ -231,7 +224,7 @@ function printComparisonTable(clusterManager) {
     }
 }
 
-function printPreamble(clusterManager, partitionBar) {
+function printPreamble(clusterManager) {
     var cluster = clusterManager.getClusterAt(0);
 
     clearScreen();
@@ -325,7 +318,7 @@ function refreshAfter() {
     }
 }
 
-function toggleRefresh(callback) {
+function toggleRefresh() {
     if (isPaused) {
         resumeRefresh();
     } else {

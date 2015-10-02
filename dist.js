@@ -26,7 +26,6 @@ var AdminClient = require('./lib/admin-client.js');
 var createTable = require('./lib/table.js');
 var HashRing = require('ringpop/lib/ring.js');
 var program = require('commander');
-var safeParse = require('./lib/util.js').safeParse;
 
 function main() {
     program
@@ -47,8 +46,10 @@ function main() {
         'percentage'
     ]);
 
-    var node = new AdminClient(hostPort);
-    node.stats(program.tchannelV1 ? 'v1' : 'v2', function onSend(err, stats) {
+    var node = new AdminClient({
+        useTChannelV1: program.tchannelV1
+    });
+    node.stats(hostPort, function onSend(err, stats) {
         var members = stats.membership.members;
 
         members = members.sort(function sort(a, b) {

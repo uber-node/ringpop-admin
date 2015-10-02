@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 // Copyright (c) 2015 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,49 +19,37 @@
 // THE SOFTWARE.
 'use strict';
 
-var createTable = require('./lib/table.js');
-var ClusterManager = require('./lib/cluster.js');
-var program = require('commander');
+function ReuseCommand(tchannelV1, coordinator, member, limit) {
+    this.useTChannelV1 = tchannelV1;
+    this.coordinator = coordinator;
+    this.member = member;
+    this.limit = limit;
+}
 
-function main() {
+function assertPositionArg(program, pos, arg) {
+    if (program.args[pos]) return;
+    console.error('Error: ' + arg + 'is required');
+    process.exit(1);
+}
+
+function parseReuseCommand(program) {
     program
-        .description('Status of members in ring')
+        .description('Undoes damping of member')
+        .option('-m, --member <memberAddr>, Address of member to reuse')
+        .option('-l, --limit <limit>, Parallelism limit')
         .option('--tchannel-v1')
-        .usage('[options] <hostport>');
+        .usage('[options] <coordinator>');
     program.parse(process.argv);
+    assertPositionArg(program, 0, 'coordinator');
 
-    var coord = program.args[0];
-
-    if (!coord) {
-        console.error('Error: hostport is required');
-        process.exit(1);
-    }
-
-    var clusterManager = new ClusterManager({
-        useTChannelV1: program.tchannelV1,
-        coordAddr: coord
-    });
-    clusterManager.fetchStats(function onStats(err) {
-        if (err) {
-            console.error('Error: ' + err.message);
-            process.exit(1);
-        }
-
-        if (clusterManager.getPartitionCount() > 1) {
-            console.error('Error: cluster is partitioned. An accurate status cannot be provided.');
-            process.exit(1);
-        }
-
-        var table = createTable([]);
-        var cluster = clusterManager.getClusterAt(0);
-        cluster.membership.forEach(function each(member) {
-            table.push([member.address, member.status]);
-        });
-        console.log(table.toString());
-        process.exit();
-    });
+    return new ReuseCommand(
+        program.tchannelV1,
+        program.args[0],
+        program.member,
+        program.limit || 25
+    );
 }
 
-if (require.main === module) {
-    main();
-}
+module.exports = {
+    parseReuseCommand: parseReuseCommand
+};

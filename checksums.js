@@ -22,8 +22,7 @@
 'use strict';
 
 var createTable = require('./lib/table.js');
-var ClusterManager = require('./lib/cluster-manager.js');
-var AdminClient = require('./lib/admin-client.js');
+var ClusterManager = require('./lib/cluster.js');
 var program = require('commander');
 
 function main() {
@@ -41,7 +40,7 @@ function main() {
     }
 
     var clusterManager = new ClusterManager({
-        program: program,
+        useTChannelV1: program.useTChannelV1,
         coordAddr: address
     });
     clusterManager.fetchStats(function onStats(err) {
