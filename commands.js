@@ -26,30 +26,12 @@ function ReuseCommand(tchannelV1, coordinator, member, limit) {
     this.limit = limit;
 }
 
-function assertPositionArg(program, pos, arg) {
-    if (program.args[pos]) return;
-    console.error('Error: ' + arg + 'is required');
-    process.exit(1);
-}
-
-function parseReuseCommand(program) {
-    program
-        .description('Undoes damping of member')
-        .option('-m, --member <memberAddr>, Address of member to reuse')
-        .option('-l, --limit <limit>, Parallelism limit')
-        .option('--tchannel-v1')
-        .usage('[options] <coordinator>');
-    program.parse(process.argv);
-    assertPositionArg(program, 0, 'coordinator');
-
-    return new ReuseCommand(
-        program.tchannelV1,
-        program.args[0],
-        program.member,
-        program.limit || 25
-    );
+function StatusCommand(tchannelV1, coordinator) {
+    this.useTChannelV1 = tchannelV1;
+    this.coordinator = coordinator;
 }
 
 module.exports = {
-    parseReuseCommand: parseReuseCommand
+    ReuseCommand: ReuseCommand,
+    StatusCommand: StatusCommand
 };

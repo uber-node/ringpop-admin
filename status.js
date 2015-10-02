@@ -23,25 +23,13 @@
 
 var createTable = require('./lib/table.js');
 var ClusterManager = require('./lib/cluster.js');
-var program = require('commander');
+var parseStatusCommand = require('./parser.js').parseStatusCommand;
 
 function main() {
-    program
-        .description('Status of members in ring')
-        .option('--tchannel-v1')
-        .usage('[options] <hostport>');
-    program.parse(process.argv);
-
-    var coord = program.args[0];
-
-    if (!coord) {
-        console.error('Error: hostport is required');
-        process.exit(1);
-    }
-
+    var command = parseStatusCommand();
     var clusterManager = new ClusterManager({
-        useTChannelV1: program.tchannelV1,
-        coordAddr: coord
+        useTChannelV1: command.useTChannelV1,
+        coordAddr: command.coordinator
     });
     clusterManager.fetchStats(function onStats(err) {
         if (err) {

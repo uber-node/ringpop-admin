@@ -23,14 +23,13 @@
 
 var Cluster = require('./lib/cluster.js');
 var createTable = require('./lib/table.js');
-var program = require('commander');
-var parseReuseCommand = require('./commands.js').parseReuseCommand;
+var parseReuseCommand = require('./parser.js').parseReuseCommand;
 
 function main() {
     console.log('Command not yet available.');
     process.exit(1);
 
-    var command = parseReuseCommand(program);
+    var command = parseReuseCommand();
     var cluster = new Cluster({
         useTChannelV1: command.useTChannelV1
     });
