@@ -36,6 +36,7 @@ function main() {
         .command('lookup', 'Lookup a key in the ring')
         .command('join', 'Makes node (re)join the cluster')
         .command('status', 'Status of members in ring')
+        .command('partitions', 'Show partition information of a ring')
         .command('top', 'General membership information')
         .parse(process.argv);
 }

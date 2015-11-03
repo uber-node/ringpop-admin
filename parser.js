@@ -59,7 +59,7 @@ function parseStatusCommand() {
 
 function parsePartitionCommand() {
     program
-        .description('Show partition information of ring')
+        .description('Show partition information of a ring')
         .option('--tchannel-v1')
         .option('-q, --quite', 'Don\'t print headers')
         .usage('[options] <coordinatorOrFile>');
