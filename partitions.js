@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // Copyright (c) 2015 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,26 +21,43 @@
 // THE SOFTWARE.
 'use strict';
 
-function ReuseCommand(tchannelV1, coordinator, member, limit) {
-    this.useTChannelV1 = tchannelV1;
-    this.coordinator = coordinator;
-    this.member = member;
-    this.limit = limit;
+var createTable = require('./lib/table.js');
+var ClusterManager = require('./lib/cluster.js');
+var parsePartitionCommand = require('./parser.js').parsePartitionCommand;
+
+function main() {
+    var command = parsePartitionCommand();
+    var clusterManager = new ClusterManager({
+        useTChannelV1: command.useTChannelV1,
+        coordAddr: command.coordinatorOrFile
+    });
+
+    clusterManager.fetchStats(function onStats(err) {
+        if (err) {
+            console.error('Error: ' + err.message);
+            process.exit(1);
+        }
+
+        var partitions = clusterManager.getPartitions();
+
+        var headers = [];
+        if (!command.quite) {
+            headers = [
+                'Checksum',
+                '# Nodes',
+                'Sample Host'
+            ];
+        }
+
+        var table = createTable(headers);
+        partitions.forEach(function each(partition) {
+            table.push([partition.membershipChecksum, partition.nodeCount, String(partition.nodes[0])]);
+        });
+        console.log(table.toString());
+        process.exit();
+    });
 }
 
-function StatusCommand(tchannelV1, coordinator) {
-    this.useTChannelV1 = tchannelV1;
-    this.coordinator = coordinator;
+if (require.main === module) {
+    main();
 }
-
-function PartitionCommand(tchannelV1, coordinatorOrFile, quite) {
-    this.useTChannelV1 = tchannelV1;
-    this.coordinatorOrFile = coordinatorOrFile;
-    this.quite = quite;
-}
-
-module.exports = {
-    ReuseCommand: ReuseCommand,
-    StatusCommand: StatusCommand,
-    PartitionCommand: PartitionCommand
-};
