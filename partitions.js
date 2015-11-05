@@ -41,7 +41,7 @@ function main() {
         var partitions = clusterManager.getPartitions();
 
         var headers = [];
-        if (!command.quite) {
+        if (!command.quiet) {
             headers = [
                 'Checksum',
                 '# Nodes',

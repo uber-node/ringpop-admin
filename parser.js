@@ -61,7 +61,7 @@ function parsePartitionCommand() {
     program
         .description('Show partition information of a ring')
         .option('--tchannel-v1')
-        .option('-q, --quite', 'Don\'t print headers')
+        .option('-q, --quiet', 'Don\'t print headers')
         .usage('[options] <coordinatorOrFile>');
     program.parse(process.argv);
     assertPositionArg(program, 0, 'coordinatorOrFile');
@@ -69,7 +69,7 @@ function parsePartitionCommand() {
     return new commands.PartitionCommand(
         program.tchannelV1,
         program.args[0],
-        program.quite
+        program.quiet
     );
 }
 

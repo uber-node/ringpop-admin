@@ -31,10 +31,10 @@ function StatusCommand(tchannelV1, coordinator) {
     this.coordinator = coordinator;
 }
 
-function PartitionCommand(tchannelV1, coordinatorOrFile, quite) {
+function PartitionCommand(tchannelV1, coordinatorOrFile, quiet) {
     this.useTChannelV1 = tchannelV1;
     this.coordinatorOrFile = coordinatorOrFile;
-    this.quite = quite;
+    this.quiet = quiet;
 }
 
 module.exports = {
