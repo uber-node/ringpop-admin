@@ -21,24 +21,41 @@
 // THE SOFTWARE.
 'use strict';
 
-var program = require('commander');
+var createTable = require('./lib/table.js');
+var ClusterManager = require('./lib/cluster.js');
+var parsePartitionCommand = require('./parser.js').parsePartitionCommand;
 
 function main() {
-    program
-        .description('Command-line tools for Ringpop')
-        .version(require('./package.json').version)
-        .command('checksums', 'Prints membership checksums')
-        .command('dist', 'Distribution of keyspace')
-        .command('dump', 'Dump membership information to disk')
-        .command('count', 'Counts members')
-        .command('leave', 'Makes node leave the cluster')
-        .command('list', 'List member information')
-        .command('lookup', 'Lookup a key in the ring')
-        .command('join', 'Makes node (re)join the cluster')
-        .command('status', 'Status of members in ring')
-        .command('partitions', 'Show partition information of a ring')
-        .command('top', 'General membership information')
-        .parse(process.argv);
+    var command = parsePartitionCommand();
+    var clusterManager = new ClusterManager({
+        useTChannelV1: command.useTChannelV1,
+        coordAddr: command.coordinatorOrFile
+    });
+
+    clusterManager.fetchStats(function onStats(err) {
+        if (err) {
+            console.error('Error: ' + err.message);
+            process.exit(1);
+        }
+
+        var partitions = clusterManager.getPartitions();
+
+        var headers = [];
+        if (!command.quiet) {
+            headers = [
+                'Checksum',
+                '# Nodes',
+                'Sample Host'
+            ];
+        }
+
+        var table = createTable(headers);
+        partitions.forEach(function each(partition) {
+            table.push([partition.membershipChecksum, partition.nodeCount, String(partition.nodes[0])]);
+        });
+        console.log(table.toString());
+        process.exit();
+    });
 }
 
 if (require.main === module) {

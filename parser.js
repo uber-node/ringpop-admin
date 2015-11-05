@@ -57,7 +57,24 @@ function parseStatusCommand() {
     return new commands.StatusCommand(program.tchannelV1, program.args[0]);
 }
 
+function parsePartitionCommand() {
+    program
+        .description('Show partition information of a ring')
+        .option('--tchannel-v1')
+        .option('-q, --quiet', 'Don\'t print headers')
+        .usage('[options] <coordinatorOrFile>');
+    program.parse(process.argv);
+    assertPositionArg(program, 0, 'coordinatorOrFile');
+
+    return new commands.PartitionCommand(
+        program.tchannelV1,
+        program.args[0],
+        program.quiet
+    );
+}
+
 module.exports = {
     parseReuseCommand: parseReuseCommand,
-    parseStatusCommand: parseStatusCommand
+    parseStatusCommand: parseStatusCommand,
+    parsePartitionCommand: parsePartitionCommand
 };

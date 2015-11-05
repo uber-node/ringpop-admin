@@ -31,7 +31,14 @@ function StatusCommand(tchannelV1, coordinator) {
     this.coordinator = coordinator;
 }
 
+function PartitionCommand(tchannelV1, coordinatorOrFile, quiet) {
+    this.useTChannelV1 = tchannelV1;
+    this.coordinatorOrFile = coordinatorOrFile;
+    this.quiet = quiet;
+}
+
 module.exports = {
     ReuseCommand: ReuseCommand,
-    StatusCommand: StatusCommand
+    StatusCommand: StatusCommand,
+    PartitionCommand: PartitionCommand
 };
