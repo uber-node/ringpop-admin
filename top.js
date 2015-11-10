@@ -55,7 +55,7 @@ function main() {
         .option('-r, --refresh-rate <refresh-rate>', 'Refresh rate (in milliseconds). Default is 10000.')
         .option('-R, --no-refresh', 'Turn refresh off. top will exit immediately after first download.')
         .option('--tchannel-v1', 'Use TChannel v1. Default is v2.')
-        .usage('[options] <host-port>');
+        .usage('[options] <hostport or bootstrapfile>');
 
     program.on('--help', function onHelp() {
         console.log('  Key bindings: ');
@@ -75,7 +75,7 @@ function main() {
     var coordinatorAddress = program.args[0];
 
     if (!coordinatorAddress) {
-        console.error('host-port is required');
+        console.error('hostport or bootstrapfile is required');
         process.exit(1);
     }
 

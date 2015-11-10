@@ -24,7 +24,7 @@ var program = require('commander');
 
 function assertPositionArg(program, pos, arg) {
     if (program.args[pos]) return;
-    console.error('Error: ' + arg + 'is required');
+    console.error('Error: ' + arg + ' is required');
     process.exit(1);
 }
 
@@ -34,9 +34,9 @@ function parseReuseCommand() {
         .option('-m, --member <memberAddr>, Address of member to reuse')
         .option('-l, --limit <limit>, Parallelism limit')
         .option('--tchannel-v1')
-        .usage('[options] <coordinator>');
+        .usage('[options] <hostport or bootstrapfile>');
     program.parse(process.argv);
-    assertPositionArg(program, 0, 'coordinator');
+    assertPositionArg(program, 0, 'hostport or bootstrapfile');
 
     return new commands.ReuseCommand(
         program.tchannelV1,
@@ -50,9 +50,9 @@ function parseStatusCommand() {
     program
         .description('Status of members in ring')
         .option('--tchannel-v1')
-        .usage('[options] <coordinator>');
+        .usage('[options] <hostport or bootstrapfile>');
     program.parse(process.argv);
-    assertPositionArg(program, 0, 'coordinator');
+    assertPositionArg(program, 0, 'hostport or bootstrapfile');
 
     return new commands.StatusCommand(program.tchannelV1, program.args[0]);
 }
@@ -62,9 +62,9 @@ function parsePartitionCommand() {
         .description('Show partition information of a ring')
         .option('--tchannel-v1')
         .option('-q, --quiet', 'Don\'t print headers')
-        .usage('[options] <coordinatorOrFile>');
+        .usage('[options] <hostport or bootstrapfile>');
     program.parse(process.argv);
-    assertPositionArg(program, 0, 'coordinatorOrFile');
+    assertPositionArg(program, 0, 'hostport or bootstrapfile');
 
     return new commands.PartitionCommand(
         program.tchannelV1,

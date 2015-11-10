@@ -29,13 +29,13 @@ function main() {
     program
         .description('Prints membership checksums')
         .option('--tchannel-v1')
-        .usage('[options] <address>');
+        .usage('[options] <hostport or bootstrapfile>');
     program.parse(process.argv);
 
     var address = program.args[0];
 
     if (!address) {
-        console.error('Error: hostport is required');
+        console.error('Error: hostport or bootstrapfile is required');
         process.exit(1);
     }
 
