@@ -75,7 +75,7 @@ function main() {
     var coordinatorAddress = program.args[0];
 
     if (!coordinatorAddress) {
-        console.error('hostport or bootstrapfile is required');
+        console.error('Error: hostport or bootstrapfile is required');
         process.exit(1);
     }
 
