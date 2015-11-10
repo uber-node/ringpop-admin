@@ -24,7 +24,7 @@
 var CliColor = require('cli-color');
 var AdminClient = require('./lib/admin-client.js');
 var createTable = require('./lib/table.js');
-var HashRing = require('ringpop/lib/ring.js');
+var HashRing = require('ringpop/lib/ring/index.js');
 var program = require('commander');
 
 function main() {
