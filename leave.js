@@ -29,13 +29,13 @@ function main() {
     program
         .description('Makes node leave cluster')
         .option('--tchannel-v1')
-        .usage('[options] <address>');
+        .usage('[options] <hostport>');
     program.parse(process.argv);
 
     var address = program.args[0];
 
     if (!address) {
-        console.error('Error: address is required');
+        console.error('Error: hostport is required');
         process.exit(1);
     }
 

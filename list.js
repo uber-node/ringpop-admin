@@ -30,13 +30,13 @@ function main() {
         .option('-h --hosts', 'List hosts')
         .option('-m --members', 'List members')
         .option('--tchannel-v1')
-        .usage('[options] <hostport>');
+        .usage('[options] <hostport or bootstrapfile>');
     program.parse(process.argv);
 
     var coord = program.args[0];
 
     if (!coord) {
-        console.error('Error: hostport is required');
+        console.error('Error: hostport or bootstrapfile is required');
         process.exit(1);
     }
 

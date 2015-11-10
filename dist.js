@@ -37,7 +37,7 @@ function main() {
     var hostPort = program.args[0];
 
     if (!hostPort) {
-        console.error('hostport is required');
+        console.error('Error: hostport is required');
         process.exit(1);
     }
 

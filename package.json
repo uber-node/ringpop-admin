@@ -16,6 +16,7 @@
     "ringpop-admin-list": "./list.js",
     "ringpop-admin-lookup": "./lookup.js",
     "ringpop-admin-join": "./join.js",
+    "ringpop-admin-partitions": "./partitions.js",
     "ringpop-admin-status": "./status.js",
     "ringpop-admin-top": "./top.js"
   },
