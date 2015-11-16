@@ -49,12 +49,16 @@ function parseReuseCommand() {
 function parseStatusCommand() {
     program
         .description('Status of members in ring')
+        .option('-q, --quiet', 'Do not print headers')
         .option('--tchannel-v1')
         .usage('[options] <hostport or bootstrapfile>');
     program.parse(process.argv);
     assertPositionArg(program, 0, 'hostport or bootstrapfile');
 
-    return new commands.StatusCommand(program.tchannelV1, program.args[0]);
+    return new commands.StatusCommand(
+        program.tchannelV1,
+        program.args[0],
+        program.quiet);
 }
 
 function parsePartitionCommand() {

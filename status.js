@@ -21,37 +21,63 @@
 // THE SOFTWARE.
 'use strict';
 
-var createTable = require('./lib/table.js');
-var ClusterManager = require('./lib/cluster.js');
+var assertTruthy = require('./lib/util.js').assertTruthy;
+var Cluster = require('./lib/cluster.js');
 var parseStatusCommand = require('./parser.js').parseStatusCommand;
+var printTable = require('./lib/table.js').print;
+
+function getDampScoreRange(allStats, statusMember) {
+    var lowest = Number.MAX_VALUE;
+    var highest = 0;
+
+    allStats.forEach(function each(stat) {
+        stat.members.forEach(function each(member) {
+            if (member.address !== statusMember.address) return;
+
+            var dampScore = member.dampScore;
+            if (typeof dampScore === 'undefined') {
+                return;
+            }
+
+            if (dampScore < lowest) {
+                lowest = dampScore;
+            }
+
+            if (dampScore > highest) {
+                highest = dampScore;
+            }
+        });
+    });
+
+    return lowest + '..' + highest;
+}
 
 function main() {
     var command = parseStatusCommand();
-    var clusterManager = new ClusterManager({
+    var cluster = new Cluster({
         useTChannelV1: command.useTChannelV1,
         coordAddr: command.coordinator
     });
-    clusterManager.fetchStats(function onStats(err) {
-        if (err) {
-            console.error('Error: ' + err.message);
-            process.exit(1);
-        }
+    cluster.fetchStats(function onStats(err) {
+        assertTruthy(!err, (err && err.message));
+        assertTruthy(cluster.getClusterAt(0),
+            'Error: no members in the cluster could be reached');
+        assertTruthy(cluster.getPartitionCount() === 1,
+            'Error: cluster is partitioned. ' +
+            'An accurate status cannot be provided');
 
-        if (clusterManager.getPartitionCount() > 1) {
-            console.error('Error: cluster is partitioned. An accurate status cannot be provided.');
-            process.exit(1);
-        }
-
-        var table = createTable([]);
-        var cluster = clusterManager.getClusterAt(0);
-        if (!cluster) {
-            console.error('Error: no members in the cluster could be reached');
-            process.exit(1);
-        }
-        cluster.membership.forEach(function each(member) {
-            table.push([member.address, member.status]);
+        var partition = cluster.getPartitionAt(0);
+        printTable(command, [
+            'ADDRESS',
+            'STATUS',
+            'DAMPSCORE'
+        ], function addRows(table) {
+            // Add status information to table
+            partition.membership.forEach(function each(member) {
+                table.push([member.address, member.status,
+                    getDampScoreRange(cluster.allStats, member)]);
+            });
         });
-        console.log(table.toString());
         process.exit();
     });
 }
