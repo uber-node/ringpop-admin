@@ -69,6 +69,11 @@ function main() {
 
         var cluster = clusterManager.getClusterAt(0);
 
+        if (!cluster) {
+            console.error('Error: no members in the cluster could be reached');
+            process.exit(1);
+        }
+
         if (program.members) {
             console.log(cluster.getNodeCount());
             process.exit();
