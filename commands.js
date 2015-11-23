@@ -26,9 +26,10 @@ function ReuseCommand(tchannelV1, coordinator, member, limit) {
     this.limit = limit;
 }
 
-function StatusCommand(tchannelV1, coordinator) {
+function StatusCommand(tchannelV1, coordinator, quiet) {
     this.useTChannelV1 = tchannelV1;
     this.coordinator = coordinator;
+    this.quiet = quiet;
 }
 
 function PartitionCommand(tchannelV1, coordinatorOrFile, quiet) {

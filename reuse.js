@@ -22,7 +22,7 @@
 'use strict';
 
 var Cluster = require('./lib/cluster.js');
-var createTable = require('./lib/table.js');
+var createTable = require('./lib/table.js').create;
 var parseReuseCommand = require('./parser.js').parseReuseCommand;
 
 function main() {

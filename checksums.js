@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 'use strict';
 
-var createTable = require('./lib/table.js');
+var createTable = require('./lib/table.js').create;
 var ClusterManager = require('./lib/cluster.js');
 var program = require('commander');
 

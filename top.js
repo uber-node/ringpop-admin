@@ -24,7 +24,7 @@
 var CliColor = require('cli-color');
 var program = require('commander');
 
-var createTable = require('./lib/table.js');
+var createTable = require('./lib/table.js').create;
 var ClusterManager = require('./lib/cluster.js');
 
 var currentRows;

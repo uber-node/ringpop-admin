@@ -23,7 +23,7 @@
 
 var CliColor = require('cli-color');
 var AdminClient = require('./lib/admin-client.js');
-var createTable = require('./lib/table.js');
+var createTable = require('./lib/table.js').create;
 var HashRing = require('ringpop/lib/ring/index.js');
 var program = require('commander');
 
