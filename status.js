@@ -44,6 +44,10 @@ function main() {
 
         var table = createTable([]);
         var cluster = clusterManager.getClusterAt(0);
+        if (!cluster) {
+            console.error('Error: no members in the cluster could be reached');
+            process.exit(1);
+        }
         cluster.membership.forEach(function each(member) {
             table.push([member.address, member.status]);
         });
