@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- "0.10"
+before_script:
+# Install cram without sudo. This allows us to use Travis containers
+# which are *much* faster than using sudo: yes.
+- "pip install --target=/tmp cram"
+- "mv /tmp/cram.py /tmp/cram"
+- "chmod +x /tmp/cram"
+- export PATH=$PATH:/tmp
+script: npm test
