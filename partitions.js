@@ -45,13 +45,23 @@ function main() {
             headers = [
                 'Checksum',
                 '# Nodes',
+                '# Alive',
+                '# Suspect',
+                '# Faulty',
                 'Sample Host'
             ];
         }
 
         var table = createTable(headers);
         partitions.forEach(function each(partition) {
-            table.push([partition.membershipChecksum, partition.nodeCount, String(partition.nodes[0])]);
+            table.push([
+                partition.membershipChecksum,
+                partition.nodeCount, 
+                partition.aliveCount,
+                partition.suspectCount,
+                partition.faultyCount,
+                String(partition.nodes[0])
+            ]);
         });
         console.log(table.toString());
         process.exit();
