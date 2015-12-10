@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+/**
+ * Creates a '.bin' directory in the package directory with symlinks to all
+ * the bin files as specified in package.json.
+ */
+var fs = require("fs");
+var path = require("path")
+
+if (process.argv.length < 3) {
+    console.error("Creates bin symlinks for the specified package in '.bin'");
+    console.error("Usage: npm-bin-link <package.json>");
+    process.exit(1);
+}
+
+var packageJSONPath = process.argv[2];
+
+try {
+    // Read package.json
+    var packageJSON = JSON.parse(fs.readFileSync(packageJSONPath));
+
+    if (Object.keys(packageJSON.bin).length > 0) {
+
+        var packageDir = path.dirname(packageJSONPath);
+        var targetPath = path.join(packageDir, ".bin");
+
+        // Create target directory if it doesn't already exist
+        fs.existsSync(targetPath) || fs.mkdirSync(targetPath);
+
+        for (var k in packageJSON.bin) {
+            var symlinkPath = path.join(targetPath, k);
+            if (!fs.existsSync(symlinkPath)) {
+                fs.symlinkSync(path.join("..", packageJSON.bin[k]), path.join(targetPath, k));
+            } else {
+                console.log(symlinkPath + " exists, skipping");
+            }
+        }
+    }
+} catch (e) {
+    console.error(e);
+    process.exit(1);
+}

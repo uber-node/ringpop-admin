@@ -1,0 +1,127 @@
+#!/bin/bash
+#
+# Runs the ringpop-admin tests.
+#
+# This script launches a ringpop cluster using tick-cluster and then runs
+# a series of tests against the ringpop-admin command output.
+#
+set -e
+
+declare cram_opts="-v"
+declare package_dir="${0%/*}/../"
+declare prog_cram="cram"
+#declare prog_tick_cluster="${package_dir}/node_modules/ringpop/scripts/tick-cluster.js"
+declare prog_tick_cluster="${0%/*}/tick-cluster.js"
+declare pid_tickcluster=
+declare test_files="${0%/*}/*.t"
+
+_cleanup() {
+    _print "Cleaning up; sending SIGTERM to tick-cluster"
+    kill $pid_tickcluster
+}
+
+#
+# Print the specified text to stdout, prefixing with a timestamp.
+#
+# $1: Text to print
+#
+_print() {
+    echo -e "[$(date)] ${0##*/}: $@"
+}
+
+#
+# Echos the full normalised path of the specified path, or nothing if the path
+# does not exist.
+#
+_normalise_path() {
+    path="$(cd "$1" && echo $PWD)"
+    if [ $? -gt 0 ]; then
+        return 1
+    else
+        echo $path
+        return 0
+    fi
+}
+
+if [ $# -gt 0 ]; then
+
+    if [ "$1" == "--help" -o "$1" == "-h" ]; then
+        {
+            echo
+            echo "Run the tests for ringpop-admin."
+            echo
+            echo "Usage: $0 [--update] [test_file] [...]"
+            echo
+            echo "  --update      When a test fails, prompt to update the saved test output."
+            echo
+        } >&2
+        exit 1
+    fi
+
+    if [ "$1" == "--update" ]; then
+        cram_opts="$cram_opts -i"
+        shift
+    fi
+
+fi
+
+# Accept test files as arguments
+if [ $# -gt 0 ]; then
+    test_files="$@"
+fi
+
+# Check cram is installed
+if ! type cram &>/dev/null; then
+    echo "$0 requires cram to be installed (try: 'sudo pip install cram')." >&2
+    echo
+    exit 1
+fi
+
+# Check test files exist
+if ! ls $test_files >/dev/null; then
+    echo "ERROR: Test files missing." >&2
+    exit 1
+fi
+
+# Build ringpop-admin if it hasn't already been built
+if [ ! -d "$package_dir/node_modules" ]; then
+    cd "$package_dir" && { npm install || exit 1; }
+fi
+
+if [ ! -x "$prog_tick_cluster" ]; then
+    echo "ERROR: Cannot find tick-cluster at: $prog_tick_cluster (or is not executable)" >&2
+    exit 1
+fi
+
+# Run tick cluster
+_print "Launching tick-cluster..."
+$prog_tick_cluster --interface=127.0.0.1 $package_dir/node_modules/ringpop/main.js >/dev/null &
+pid_tickcluster=$!
+
+sleep 1
+if ! ps -p $pid_tickcluster &>/dev/null; then
+    echo "ERROR: Launching tick-cluster failed" >&2
+    exit 1
+fi
+
+# Clean up tick-cluster on exit
+trap _cleanup exit
+
+# Wait for convergence
+_print "Waiting for convergence..."
+sleep 5
+
+# Test setup
+${0%/*}/npm-bin-link ../package.json >/dev/null || exit 1
+export PATH=$(_normalise_path "${0%/*}/../.bin"):$PATH
+
+# Run the tests
+_print "Running tests..."
+cram $cram_opts $test_files
+declare test_result=$?
+
+if [ $test_result -eq 0 ]; then
+    _print "\033[0;32mSuccess!\033[0m"
+fi
+
+exit $test_result

@@ -1,0 +1,76 @@
+#!/bin/bash
+#
+# Helper tool for quickly creating new cram tests.
+#
+
+declare desc=
+declare indent_num=2
+
+usage() {
+    {
+        echo
+        echo "Create new cram test and output to stdout."
+        echo "For more info, see https://bitheap.org/cram/"
+        echo
+        echo "Usage: $0 [description] -- <command> [args ...]"
+        echo " E.g.: $0 \"Test bash help output\" -- bash --help >> tests/bash-help.t"
+        echo
+    } >&2
+}
+
+#
+# Adds quotes around the given parameter, if necessary.
+#
+# $1:
+#
+_escape() {
+    local escaped_args=
+    local n=
+
+    for s in "$@"; do
+
+        unset n
+
+        if [[ "$s" =~ \ |\' ]]; then
+            n="\"$s\""
+        else
+            n="$s"
+        fi
+        escaped_args="$escaped_args $n"
+    done
+
+    echo "$escaped_args"
+}
+
+if [ "$1" != "--" ]; then
+    desc=$1
+    shift
+fi
+
+if [ "$1" != "--" ]; then
+    usage
+    exit 1
+fi
+
+if [ -z "$desc" ]; then
+    desc="Test"
+fi
+
+shift # '--'
+
+declare indent=$(printf "%${indent_num}s" "")
+
+# Output cram test
+echo "$desc:"
+echo
+echo "${indent}\$ $(_escape "$@")"
+
+return_output=$("$@" 2>&1)
+return_code=$?
+
+echo "$return_output" | sed "s/^/${indent}/g"
+
+# Add return code check if it's not success
+if [ $return_code -gt 0 ]; then
+    echo "${indent}[$return_code]"
+fi
