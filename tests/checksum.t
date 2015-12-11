@@ -20,7 +20,7 @@ Invalid bootstrap file
 
   $  ringpop-admin checksums QWERTY
   
-  assert.js:93
+  assert.js:* (glob)
     throw new assert.AssertionError({
           ^
   AssertionError: invalid destination
