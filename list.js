@@ -69,11 +69,13 @@ function main() {
 
         if (program.members) {
             printSorted(cluster.getMemberAddrs());
+            clusterManager.printConnectionErrorMsg();
             process.exit();
         }
 
         if (program.hosts) {
             printSorted(cluster.getHostAddrs());
+            clusterManager.printConnectionErrorMsg();
             process.exit();
         }
     });

@@ -2,6 +2,7 @@ Test list command success:
 
   $  ringpop-admin list -h 127.0.0.1:3000
   127.0.0.1
+
   $  ringpop-admin list -m 127.0.0.1:3000
   127.0.0.1:3000
   127.0.0.1:3001
