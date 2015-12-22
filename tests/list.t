@@ -11,9 +11,9 @@ Test list command success:
 
 With bootstrap file:
 
-  $  ringpop-admin list -h $TESTDIR/hosts.json
+  $  ringpop-admin list -h file://$TESTDIR/hosts.json
   127.0.0.1
-  $  ringpop-admin list -m $TESTDIR/hosts.json
+  $  ringpop-admin list -m file://$TESTDIR/hosts.json
   127.0.0.1:3000
   127.0.0.1:3001
   127.0.0.1:3002

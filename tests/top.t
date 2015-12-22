@@ -18,7 +18,7 @@ Top command success:
 
 With bootstrap file:
 
-  $  ringpop-admin top -R $TESTDIR/hosts.json
+  $  ringpop-admin top -R file://$TESTDIR/hosts.json
   \x1bcA cluster of 5 nodes have converged on a single membership view. (esc)
   It took *ms to report the stats below. (glob)
   

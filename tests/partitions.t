@@ -7,7 +7,7 @@ Partitions command success:
 
 With bootstrap file:
 
-  $  ringpop-admin partitions $TESTDIR/hosts.json
+  $  ringpop-admin partitions file://$TESTDIR/hosts.json
    Checksum*# Nodes*# Alive*# Suspect*# Faulty*Sample Host* (glob)
    *5*5*0*0*127.0.0.1:* (glob)
 
@@ -54,19 +54,5 @@ Provide hint if the user tries and fails to connect to localhost or 127.0.0.1
   [1]
 
   $  ringpop-admin partitions localhost:2999
-  Error while fetching node stats: { [TchannelSocketError: tchannel socket error (ECONNREFUSED from connect): connect ECONNREFUSED]
-    type: 'tchannel.socket',
-    message: 'tchannel socket error (ECONNREFUSED from connect): connect ECONNREFUSED',
-    hostPort: null,
-    direction: 'out',
-    remoteAddr: null,
-    name: 'TchannelSocketError',
-    socketRemoteAddr: 'localhost:2999',
-    causeMessage: 'connect ECONNREFUSED',
-    origMessage: 'connect ECONNREFUSED',
-    code: 'ECONNREFUSED',
-    errno: 'ECONNREFUSED',
-    syscall: 'connect',
-    fullType: 'tchannel.socket~!~error.wrapped-io.connect.ECONNREFUSED' }
-  Error: Failed to connect to ringpop listening on localhost:2999. Ringpop ordinarily does not listen on the loopback interface. Try a different IP address.
+  Error: Expected an ip:port, hostnames are not allowed.
   [1]
