@@ -4,13 +4,17 @@ Partitions command success:
    Checksum*# Nodes*# Alive*# Suspect*# Faulty*Sample Host* (glob)
    *5*5*0*0*127.0.0.1:3000* (glob)
 
+With explicit ringpop:
+
+  $  ringpop-admin partitions ringpop://127.0.0.1:3000
+   Checksum*# Nodes*# Alive*# Suspect*# Faulty*Sample Host* (glob)
+   *5*5*0*0*127.0.0.1:3000* (glob)
 
 With bootstrap file:
 
   $  ringpop-admin partitions file://$TESTDIR/hosts.json
    Checksum*# Nodes*# Alive*# Suspect*# Faulty*Sample Host* (glob)
    *5*5*0*0*127.0.0.1:* (glob)
-
 
 Unable to connect to host:
 

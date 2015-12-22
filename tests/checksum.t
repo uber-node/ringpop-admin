@@ -7,6 +7,15 @@ Test checksum success:
    127.0.0.1:3003   *  (glob)
    127.0.0.1:3004   *  (glob)
 
+With explicit ringpop:
+
+  $  ringpop-admin checksums ringpop://127.0.0.1:3000
+   127.0.0.1:3000   *  (glob)
+   127.0.0.1:3001   *  (glob)
+   127.0.0.1:3002   *  (glob)
+   127.0.0.1:3003   *  (glob)
+   127.0.0.1:3004   *  (glob)
+
 With bootstrap file option:
 
   $  ringpop-admin checksums file://$TESTDIR/hosts.json
