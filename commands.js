@@ -19,22 +19,22 @@
 // THE SOFTWARE.
 'use strict';
 
-function ReuseCommand(tchannelV1, coordinator, member, limit) {
+function ReuseCommand(tchannelV1, discoveryUri, member, limit) {
     this.useTChannelV1 = tchannelV1;
-    this.coordinator = coordinator;
+    this.discoveryUri = discoveryUri;
     this.member = member;
     this.limit = limit;
 }
 
-function StatusCommand(tchannelV1, coordinator, quiet) {
+function StatusCommand(tchannelV1, discoveryUri, quiet) {
     this.useTChannelV1 = tchannelV1;
-    this.coordinator = coordinator;
+    this.discoveryUri = discoveryUri;
     this.quiet = quiet;
 }
 
-function PartitionCommand(tchannelV1, coordinatorOrFile, quiet) {
+function PartitionCommand(tchannelV1, discoveryUri, quiet) {
     this.useTChannelV1 = tchannelV1;
-    this.coordinatorOrFile = coordinatorOrFile;
+    this.discoveryUri = discoveryUri;
     this.quiet = quiet;
 }
 

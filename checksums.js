@@ -29,19 +29,19 @@ function main() {
     program
         .description('Prints membership checksums')
         .option('--tchannel-v1')
-        .usage('[options] <hostport or bootstrapfile>');
+        .usage('[options] <discoveryUri>');
     program.parse(process.argv);
 
-    var address = program.args[0];
+    var discoveryUri = program.args[0];
 
-    if (!address) {
-        console.error('Error: hostport or bootstrapfile is required');
+    if (!discoveryUri) {
+        console.error('Error: discoveryUri is required');
         process.exit(1);
     }
 
     var clusterManager = new ClusterManager({
         useTChannelV1: program.useTChannelV1,
-        coordAddr: address
+        discoveryUri: discoveryUri
     });
     clusterManager.fetchStats(function onStats(err) {
         if (err) {

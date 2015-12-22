@@ -55,7 +55,7 @@ function main() {
         .option('-r, --refresh-rate <refresh-rate>', 'Refresh rate (in milliseconds). Default is 10000.')
         .option('-R, --no-refresh', 'Turn refresh off. top will exit immediately after first download.')
         .option('--tchannel-v1', 'Use TChannel v1. Default is v2.')
-        .usage('[options] <hostport or bootstrapfile>');
+        .usage('[options] <discoveryUri>');
 
     program.on('--help', function onHelp() {
         console.log('  Key bindings: ');
@@ -72,10 +72,10 @@ function main() {
 
     program.parse(process.argv);
 
-    var coordinatorAddress = program.args[0];
+    var discoveryUri = program.args[0];
 
-    if (!coordinatorAddress) {
-        console.error('Error: hostport or bootstrapfile is required');
+    if (!discoveryUri) {
+        console.error('Error: discoveryUri is required');
         process.exit(1);
     }
 
@@ -83,7 +83,7 @@ function main() {
     refreshRate = +program.refreshRate || Defaults.RefreshRate;
 
     var clusterManager = new ClusterManager({
-        coordAddr: coordinatorAddress,
+        discoveryUri: discoveryUri,
         dumpTo: program.dumpFile,
         useTChannelV1: program.tchannelV1
     });
