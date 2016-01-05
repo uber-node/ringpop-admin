@@ -30,13 +30,13 @@ function main() {
         .option('-h --hosts', 'List hosts')
         .option('-m --members', 'List members')
         .option('--tchannel-v1')
-        .usage('[options] <hostport or bootstrapfile>');
+        .usage('[options] <discoveryUri>');
     program.parse(process.argv);
 
-    var coord = program.args[0];
+    var discoveryUri = program.args[0];
 
-    if (!coord) {
-        console.error('Error: hostport or bootstrapfile is required');
+    if (!discoveryUri) {
+        console.error('Error: discoveryUri is required');
         process.exit(1);
     }
 
@@ -47,7 +47,7 @@ function main() {
 
     var clusterManager = new ClusterManager({
         useTChannelV1: program.tchannelV1,
-        coordAddr: coord
+        discoveryUri: discoveryUri
     });
     clusterManager.fetchStats(function onStats(err) {
         if (err) {

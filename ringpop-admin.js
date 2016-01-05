@@ -38,6 +38,40 @@ function main() {
         .command('status', 'Status of members in ring')
         .command('partitions', 'Show partition information of a ring')
         .command('top', 'General membership information')
+        .on('--help', function onHelp() {
+            console.log('  Discovery:');
+            console.log('');
+            console.log('    Most of the commands can discover the ring via');
+            console.log('    a discoverUri like this: \'ringpop://127.0.0.1:3000\'.');
+            console.log('    If no protocol is specified \'ringpop://\' will be');
+            console.log('    used.');
+            console.log('');
+            console.log('    Supported protocols are:');
+            console.log('');
+            console.log('     - ringpop://');
+            console.log('       Discover the ring by connecting to a host of');
+            console.log('       the ring.');
+            console.log('');
+            console.log('       Example: ringpop://127.0.0.1:3000');
+            console.log('');
+            console.log('     - file://');
+            console.log('       Discover the ring by reading a json file');
+            console.log('       containing an array of host:port combinations');
+            console.log('');
+            console.log('       Example: file:///absolute/path/to/file');
+            console.log('       Example: file://./relative/path');
+            console.log('       File content: ["127.0.0.1:3000"]');
+            console.log('');
+            console.log('     - hyperbahn://');
+            console.log('       Discover the ring by querying hyperbahn for');
+            console.log('       the members of a service. When no hyperbahn');
+            console.log('       ip and port are given 127.0.0.1:21300 will be');
+            console.log('       used.');
+            console.log('');
+            console.log('       Example: hyperbahn:///ringpop');
+            console.log('       Example: hyperbahn://hyperbahn-ip:port/ringpop');
+            console.log('');
+        })
         .parse(process.argv);
 }
 

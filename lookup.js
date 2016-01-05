@@ -29,13 +29,13 @@ function main() {
         .description('Lookup a key in the ring')
         .option('-k --key <key>', 'Key to lookup')
         .option('--tchannel-v1')
-        .usage('[options] <hostport>');
+        .usage('[options] <discoveryUri>');
     program.parse(process.argv);
 
-    var coord = program.args[0];
+    var discoveryUri = program.args[0];
 
-    if (!coord) {
-        console.error('Error: hostport is required');
+    if (!discoveryUri) {
+        console.error('Error: discoveryUri is required');
         process.exit(1);
     }
 
@@ -46,7 +46,7 @@ function main() {
 
     var clusterManager = new ClusterManager({
         useTChannelV1: program.tchannelV1,
-        coordAddr: coord
+        discoveryUri: discoveryUri
     });
     clusterManager.lookup(program.key, function onLookup(err, res) {
         if (err) {

@@ -56,7 +56,7 @@ function main() {
     var command = parseStatusCommand();
     var cluster = new Cluster({
         useTChannelV1: command.useTChannelV1,
-        coordAddr: command.coordinator
+        discoveryUri: command.discoveryUri
     });
     cluster.fetchStats(function onStats(err) {
         assertTruthy(!err, (err && err.message));

@@ -29,7 +29,7 @@ function main() {
     var command = parsePartitionCommand();
     var clusterManager = new ClusterManager({
         useTChannelV1: command.useTChannelV1,
-        coordAddr: command.coordinatorOrFile
+        discoveryUri: command.discoveryUri
     });
 
     clusterManager.fetchStats(function onStats(err) {
@@ -56,7 +56,7 @@ function main() {
         partitions.forEach(function each(partition) {
             table.push([
                 partition.membershipChecksum,
-                partition.nodeCount, 
+                partition.nodeCount,
                 partition.aliveCount,
                 partition.suspectCount,
                 partition.faultyCount,

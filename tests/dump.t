@@ -1,6 +1,6 @@
 Dump command dumps file successfully:
 
-  $  ringpop-admin dump $TESTDIR/hosts.json -f /tmp/ringpop-admin-dump-test.json
+  $  ringpop-admin dump file://$TESTDIR/hosts.json -f /tmp/ringpop-admin-dump-test.json
 
 Check for non-zero file:
 
