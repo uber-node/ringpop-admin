@@ -59,6 +59,7 @@ function main() {
         var partitionCount = clusterManager.getPartitionCount();
         if (program.partitions) {
             console.log(partitionCount);
+            clusterManager.printConnectionErrorMsg();
             process.exit(0);
         }
 
@@ -76,11 +77,13 @@ function main() {
 
         if (program.members) {
             console.log(cluster.getNodeCount());
+            clusterManager.printConnectionErrorMsg();
             process.exit();
         }
 
         if (program.hosts) {
             console.log(cluster.getHostCount());
+            clusterManager.printConnectionErrorMsg();
             process.exit();
         }
     });

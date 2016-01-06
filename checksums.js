@@ -52,6 +52,8 @@ function main() {
         var checksums = reduceStatsToChecksums(clusterManager.allStats);
         var checksumsTable = createChecksumsTable(checksums);
         console.log(checksumsTable.toString());
+
+        clusterManager.printConnectionErrorMsg();
         process.exit();
     });
 }

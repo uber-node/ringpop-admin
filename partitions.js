@@ -64,6 +64,8 @@ function main() {
             ]);
         });
         console.log(table.toString());
+
+        clusterManager.printConnectionErrorMsg();
         process.exit();
     });
 }

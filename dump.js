@@ -73,6 +73,7 @@ function main() {
             process.exit(1);
         }
 
+        clusterManager.printConnectionErrorMsg();
         process.exit();
     }
 }

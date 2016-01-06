@@ -60,6 +60,7 @@ function main() {
         }
 
         console.log(res.dest);
+        clusterManager.printConnectionErrorMsg();
         process.exit();
     });
 }

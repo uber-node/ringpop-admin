@@ -78,6 +78,7 @@ function main() {
                     getDampScoreRange(cluster.allStats, member)]);
             });
         });
+        cluster.printConnectionErrorMsg();
         process.exit();
     });
 }
