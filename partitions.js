@@ -32,7 +32,9 @@ function main() {
         discoveryUri: command.discoveryUri
     });
 
-    clusterManager.fetchStats(function onStats(err) {
+    clusterManager.fetchStats({
+        checksum: command.checksum
+    }, function onStats(err) {
         if (err) {
             console.error('Error: ' + err.message);
             process.exit(1);

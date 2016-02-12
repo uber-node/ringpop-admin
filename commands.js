@@ -32,10 +32,11 @@ function StatusCommand(tchannelV1, discoveryUri, quiet) {
     this.quiet = quiet;
 }
 
-function PartitionCommand(tchannelV1, discoveryUri, quiet) {
+function PartitionCommand(tchannelV1, discoveryUri, quiet, checksum) {
     this.useTChannelV1 = tchannelV1;
     this.discoveryUri = discoveryUri;
     this.quiet = quiet;
+    this.checksum = checksum;
 }
 
 module.exports = {
