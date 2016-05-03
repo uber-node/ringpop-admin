@@ -20,7 +20,8 @@ Command-line tools for Ringpop
     status       Status of members in ring
     partitions   Show partition information of a ring
     top          General membership information
-    reap         Remove the faulty nodes from this node's membership
+    reap         Remove nodes marked as faulty from the cluster
+    heal         Start a partition heal coordinated by the coordinator node
     help [cmd]   display help for [cmd]
 
   Command-line tools for Ringpop
