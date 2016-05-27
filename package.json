@@ -35,6 +35,7 @@
     "commander": "^2.6.0",
     "farmhash": "^1.1.1",
     "ringpop": "^10.0.0",
+    "farmhash": "^1.1.1",
     "tchannel": "3.6.2",
     "underscore": "^1.8.3"
   },
