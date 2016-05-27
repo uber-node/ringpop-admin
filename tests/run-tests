@@ -7,17 +7,23 @@
 #
 set -e
 
-declare cram_opts="-v"
+
+declare cram_opts="-v --shell=/bin/bash"
 declare package_dir="${0%/*}/../"
 declare prog_cram="cram"
 #declare prog_tick_cluster="${package_dir}/node_modules/ringpop/scripts/tick-cluster.js"
 declare prog_tick_cluster="${0%/*}/tick-cluster.js"
+declare prog_ringpop="node_modules/ringpop/main.js"
 declare pid_tickcluster=
 declare test_files="${0%/*}/*.t"
+declare isolated_test_files="${0%/*}/isolated/*.t"
 
 _cleanup() {
-    _print "Cleaning up; sending SIGTERM to tick-cluster"
-    kill $pid_tickcluster
+	if [ ! -z "$pid_tickcluster" ]; then
+		_print "Cleaning up; sending SIGTERM to tick-cluster"
+		kill $pid_tickcluster
+		pid_tickcluster=""
+	fi
 }
 
 #
@@ -65,11 +71,6 @@ if [ $# -gt 0 ]; then
 
 fi
 
-# Accept test files as arguments
-if [ $# -gt 0 ]; then
-    test_files="$@"
-fi
-
 # Check cram is installed
 if ! type cram &>/dev/null; then
     echo "$0 requires cram to be installed (try: 'sudo pip install cram')." >&2
@@ -84,12 +85,6 @@ if [ -z "$(which timeout || which gtimeout)" ]; then
     exit 1
 fi
 
-# Check test files exist
-if ! ls $test_files >/dev/null; then
-    echo "ERROR: Test files missing." >&2
-    exit 1
-fi
-
 # Build ringpop-admin if it hasn't already been built
 if [ ! -d "$package_dir/node_modules" ]; then
     cd "$package_dir" && { npm install || exit 1; }
@@ -100,35 +95,71 @@ if [ ! -x "$prog_tick_cluster" ]; then
     exit 1
 fi
 
-# Run tick cluster
-_print "Launching tick-cluster..."
-$prog_tick_cluster --interface=127.0.0.1 $package_dir/node_modules/ringpop/main.js >/dev/null &
-pid_tickcluster=$!
-
-sleep 1
-if ! ps -p $pid_tickcluster &>/dev/null; then
-    echo "ERROR: Launching tick-cluster failed" >&2
-    exit 1
-fi
-
 # Clean up tick-cluster on exit
 trap _cleanup exit
 
-# Wait for convergence
-_print "Waiting for convergence..."
-sleep 5
-
 # Test setup
 ${0%/*}/npm-bin-link ../package.json >/dev/null || exit 1
-export PATH=$(_normalise_path "${0%/*}/../.bin"):$PATH
 
-# Run the tests
-_print "Running tests..."
-cram $cram_opts $test_files
-declare test_result=$?
+export PATH=$(_normalise_path "${0%/*}/../.bin"):$PATH
+export PROG_RINGPOP="$(_normalise_path "$package_dir")/$prog_ringpop"
+export PACKAGE_DIR="$(_normalise_path "$package_dir")"
+
+run() {
+	# Check test files exist
+	if ! ls "$@" >/dev/null; then
+		echo "ERROR: Test files missing." >&2
+		exit 1
+	fi
+
+	local exit_code=0
+	# Run tick cluster
+	_print "Launching tick-cluster..."
+	$prog_tick_cluster --interface=127.0.0.1 --port 3000 "$package_dir/$prog_ringpop" >/dev/null &
+	pid_tickcluster=$!
+
+	sleep 1
+	if ! ps -p $pid_tickcluster &>/dev/null; then
+		echo "ERROR: Launching tick-cluster failed" >&2
+		exit 1
+	fi
+
+	# Wait for convergence
+	_print "Waiting for convergence..."
+	sleep 5
+
+	# Run the tests
+	_print "Running tests..."
+	cram $cram_opts "$@" || exit_code=1
+
+	_cleanup
+
+	return $exit_code
+}
+
+declare test_result=0
+# Accept test files as arguments
+if [ $# -gt 0 ]; then
+    run "$@" || test_result=1
+else
+	_print "Testing $test_files"
+	run $test_files
+
+	# To be able to test the collisions-command, we need to add a node with a specific port to the ring.
+	# Instead of changing all the other tests to expect that node to be there I think it makes more sense to allow
+	# the option to run tests in isolation from others if they need a different setup.
+	# Ideally we let each test do their own setup/tear-down.
+	for file in $isolated_test_files; do
+		_print "Testing $file isolated"
+		run $file || test_result=1
+	done
+fi
+
 
 if [ $test_result -eq 0 ]; then
     _print "\033[0;32mSuccess!\033[0m"
 fi
+
+_print "exiting $test_result"
 
 exit $test_result
