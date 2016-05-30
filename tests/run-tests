@@ -12,7 +12,8 @@ declare cram_opts="-v --shell=/bin/bash"
 declare package_dir="${0%/*}/../"
 declare prog_cram="cram"
 declare ringpop_common_dir="${0%/*}/ringpop-common"
-declare ringpop_common_branch="tr-tick-cluster"
+declare ringpop_common_branch="master"
+declare prog_ringpop="node_modules/ringpop/main.js"
 declare prog_tick_cluster="${ringpop_common_dir}/tools/tick-cluster.js"
 declare pid_tickcluster=
 declare test_files="${0%/*}/*.t"
@@ -69,6 +70,10 @@ fetch-ringpop-common() {
         run git checkout "FETCH_HEAD"
         run cd - >/dev/null
     fi
+
+    run cd "${ringpop_common_dir}"
+    run npm install >/dev/null
+    run cd - >/dev/null
 }
 
 if [ $# -gt 0 ]; then
@@ -112,12 +117,11 @@ if [ ! -d "$package_dir/node_modules" ]; then
     cd "$package_dir" && { npm install || exit 1; }
 fi
 
+fetch-ringpop-common 2>&1
+
 if [ ! -x "$prog_tick_cluster" ]; then
-    fetch-ringpop-common 2>&1
-    if [ ! -x "$prog_tick_cluster" ]; then
-      echo "ERROR: Cannot find tick-cluster at: $prog_tick_cluster (or is not executable)" >&2
-      exit 1
-    fi
+    echo "ERROR: Cannot find tick-cluster at: $prog_tick_cluster (or is not executable)" >&2
+    exit 1
 fi
 
 # Clean up tick-cluster on exit
